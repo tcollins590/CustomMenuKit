@@ -42,19 +42,23 @@ public struct CustomMenu<Label: View, Content: View>: View {
             labelBuilder()
         }
         .popover(isPresented: $isPresented) {
-            let menuContent = VStack(alignment: .leading, spacing: 0) {
-                contentBuilder()
-                    .environment(\.menuDismiss) {
-                        isPresented = false
-                    }
-            }
-            .frame(idealWidth: 280, maxHeight: 400)
-            
             if #available(iOS 16.4, *) {
-                menuContent
-                    .presentationCompactAdaptation(.popover)
+                VStack(alignment: .leading, spacing: 0) {
+                    contentBuilder()
+                        .environment(\.menuDismiss) {
+                            isPresented = false
+                        }
+                }
+                .frame(idealWidth: 280, maxHeight: 400)
+                .presentationCompactAdaptation(.popover)
             } else {
-                menuContent
+                VStack(alignment: .leading, spacing: 0) {
+                    contentBuilder()
+                        .environment(\.menuDismiss) {
+                            isPresented = false
+                        }
+                }
+                .frame(idealWidth: 280, maxHeight: 400)
             }
         }
     }
@@ -132,16 +136,5 @@ extension Divider {
     public func menuDividerStyle() -> some View {
         self
             .padding(.vertical, 4)
-    }
-}
-
-public extension View {
-    @ViewBuilder
-    func `if`<Content: View>(_ condition: Bool, content: (Self) -> Content) -> some View {
-        if condition {
-            content(self)
-        } else {
-            self
-        }
     }
 } 
