@@ -1,0 +1,69 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "CustomMenuKit-arm64-apple-macosx16.0-debug.module": ["<CustomMenuKit-arm64-apple-macosx16.0-debug.module>"]
+  "CustomMenuKitExample-arm64-apple-macosx16.0-debug.module": ["<CustomMenuKitExample-arm64-apple-macosx16.0-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<CustomMenuKit-arm64-apple-macosx16.0-debug.module>","<CustomMenuKitExample-arm64-apple-macosx16.0-debug.module>"]
+  "test": ["<CustomMenuKit-arm64-apple-macosx16.0-debug.module>","<CustomMenuKitExample-arm64-apple-macosx16.0-debug.module>"]
+default: "main"
+nodes:
+  "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/CustomMenu.swift","/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/SelectionMenu.swift"]
+    outputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources"]
+    description: "Write auxiliary file /Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources"
+
+  "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift","/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift"]
+    outputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources"]
+    description: "Write auxiliary file /Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources"
+
+  "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt"
+
+  "<CustomMenuKit-arm64-apple-macosx16.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule"]
+    outputs: ["<CustomMenuKit-arm64-apple-macosx16.0-debug.module>"]
+
+  "<CustomMenuKitExample-arm64-apple-macosx16.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKitExample.swiftmodule"]
+    outputs: ["<CustomMenuKitExample-arm64-apple-macosx16.0-debug.module>"]
+
+  "C.CustomMenuKit-arm64-apple-macosx16.0-debug.module":
+    tool: shell
+    inputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/CustomMenu.swift","/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/SelectionMenu.swift","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources"]
+    outputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule"]
+    description: "Compiling Swift Module 'CustomMenuKit' (2 sources)"
+    args: ["/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc","-module-name","CustomMenuKit","-emit-dependencies","-emit-module","-emit-module-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule","-output-file-map","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/output-file-map.json","-parse-as-library","-incremental","@/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources","-I","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx12.0","-enable-batch-mode","-index-store-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j16","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/CustomMenuKit-Swift.h","-swift-version","5","-Xfrontend","-experimental-lazy-typecheck","-Xfrontend","-experimental-skip-all-function-bodies","-Xfrontend","-experimental-allow-module-with-compiler-errors","-Xfrontend","-empty-abi-descriptor","-I","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing","-L","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing","-plugin-path","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-g","-Xcc","-isysroot","-Xcc","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-Xcc","-fPIC","-Xcc","-g","-package-name","custommenukit"]
+
+  "C.CustomMenuKitExample-arm64-apple-macosx16.0-debug.module":
+    tool: shell
+    inputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift","/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources"]
+    outputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKitExample.swiftmodule"]
+    description: "Compiling Swift Module 'CustomMenuKitExample' (2 sources)"
+    args: ["/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc","-module-name","CustomMenuKitExample","-emit-dependencies","-emit-module","-emit-module-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKitExample.swiftmodule","-output-file-map","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/output-file-map.json","-incremental","@/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources","-I","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx12.0","-enable-batch-mode","-index-store-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j16","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-swift-version","5","-Xfrontend","-experimental-lazy-typecheck","-Xfrontend","-experimental-skip-all-function-bodies","-Xfrontend","-experimental-allow-module-with-compiler-errors","-Xfrontend","-empty-abi-descriptor","-I","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing","-L","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing","-plugin-path","/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-g","-Xcc","-isysroot","-Xcc","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-Xcc","-fPIC","-Xcc","-g","-package-name","custommenukit"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/","/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/","/Users/tylercollins/Development/ios/CustomMenuKit/Package.swift","/Users/tylercollins/Development/ios/CustomMenuKit/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

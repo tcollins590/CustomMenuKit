@@ -1,0 +1,5 @@
+CustomMenuKitDemo/
+.DS_Store
+.build/
+.swiftpm/
+*.xcodeproj 

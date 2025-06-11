@@ -1,0 +1,17 @@
+{
+  "": {
+    "swift-dependencies": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/master.swiftdeps"
+  },
+  "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift": {
+    "dependencies": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/ContentView.d",
+    "object": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/ContentView.swift.o",
+    "swiftmodule": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/ContentView.swiftdeps"
+  },
+  "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift": {
+    "dependencies": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/CustomMenuKitExampleApp.d",
+    "object": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/CustomMenuKitExampleApp.swift.o",
+    "swiftmodule": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/CustomMenuKitExampleApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/CustomMenuKitExampleApp.swiftdeps"
+  }
+}

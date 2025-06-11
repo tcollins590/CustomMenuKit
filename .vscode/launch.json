@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CustomMenuKit}",
+            "name": "Debug CustomMenuKitExample",
+            "program": "${workspaceFolder:CustomMenuKit}/.build/debug/CustomMenuKitExample",
+            "preLaunchTask": "swift: Build Debug CustomMenuKitExample"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:CustomMenuKit}",
+            "name": "Release CustomMenuKitExample",
+            "program": "${workspaceFolder:CustomMenuKit}/.build/release/CustomMenuKitExample",
+            "preLaunchTask": "swift: Build Release CustomMenuKitExample"
+        }
+    ]
+}

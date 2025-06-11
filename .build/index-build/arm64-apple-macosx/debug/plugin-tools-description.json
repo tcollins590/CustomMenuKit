@@ -1,0 +1,397 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.CustomMenuKit-arm64-apple-macosx16.0-debug.module" : {
+      "executable" : "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources",
+      "importPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/CustomMenu.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/SelectionMenu.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "CustomMenuKit",
+      "moduleOutputPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule",
+      "objects" : [
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/CustomMenu.swift.o",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/SelectionMenu.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx12.0",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j16",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/CustomMenuKit-Swift.h",
+        "-swift-version",
+        "5",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-I",
+        "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+        "-L",
+        "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+        "-plugin-path",
+        "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "custommenukit"
+      ],
+      "outputFileMapPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/CustomMenu.swift",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/SelectionMenu.swift"
+      ],
+      "tempsPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.CustomMenuKitExample-arm64-apple-macosx16.0-debug.module" : {
+      "executable" : "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources",
+      "importPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKit.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "CustomMenuKitExample",
+      "moduleOutputPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKitExample.swiftmodule",
+      "objects" : [
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/ContentView.swift.o",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/CustomMenuKitExampleApp.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx12.0",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j16",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-swift-version",
+        "5",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-I",
+        "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+        "-L",
+        "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+        "-plugin-path",
+        "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "custommenukit"
+      ],
+      "outputFileMapPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules/CustomMenuKitExample.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift",
+        "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift"
+      ],
+      "tempsPath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "CustomMenuKit" : [
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "CustomMenuKit",
+      "-package-name",
+      "custommenukit",
+      "-incremental",
+      "-c",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/CustomMenu.swift",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/SelectionMenu.swift",
+      "-I",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx12.0",
+      "-enable-batch-mode",
+      "-index-store-path",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j16",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-module-cache-path",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/CustomMenuKit-Swift.h",
+      "-swift-version",
+      "5",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-I",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+      "-L",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+      "-plugin-path",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "custommenukit",
+      "-driver-use-frontend-path",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc"
+    ],
+    "CustomMenuKitExample" : [
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "CustomMenuKitExample",
+      "-package-name",
+      "custommenukit",
+      "-incremental",
+      "-c",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift",
+      "-I",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx12.0",
+      "-enable-batch-mode",
+      "-index-store-path",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j16",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-module-cache-path",
+      "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-swift-version",
+      "5",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-I",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+      "-L",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/macosx/testing",
+      "-plugin-path",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "custommenukit",
+      "-driver-use-frontend-path",
+      "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "CustomMenuKit" : [
+
+    ],
+    "CustomMenuKitExample" : [
+      "CustomMenuKit"
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "enableAllTraits" : false
+  },
+  "writeCommands" : {
+    "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/CustomMenu.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Sources/CustomMenuKit/SelectionMenu.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKit.build/sources"
+    },
+    "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Development/ios/CustomMenuKit/Examples/CustomMenuKitExample/CustomMenuKitExampleApp.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/CustomMenuKitExample.build/sources"
+    },
+    "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/tylercollins/Library/Developer/Toolchains/swift-6.1.2-RELEASE.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/tylercollins/Development/ios/CustomMenuKit/.build/index-build/arm64-apple-macosx/debug/swift-version--23AC49B2CC5BB1CB.txt"
+    }
+  }
+}
