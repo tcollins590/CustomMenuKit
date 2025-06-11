@@ -1,6 +1,10 @@
 # CustomMenuKit
 
-A customizable, drop-in replacement for SwiftUI's `Menu`, designed to provide an identical visual style and behavior while offering enhanced features like searchable content.
+A customizable, drop-in replacement for SwiftUI's `Menu`, designed to provide an identical visual style to SwiftUI's Menu and behavior while offering enhanced features like searchable content.
+
+| Searchable Menu | Custom Styles |
+| --- | --- |
+| <img src="Media/searchable-menu-demo.gif" width="250"/> | <img src="Media/custom-menu-demo.gif" width="250"/> |
 
 ## Features
 

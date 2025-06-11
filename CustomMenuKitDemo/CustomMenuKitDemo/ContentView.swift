@@ -12,6 +12,9 @@ struct ContentView: View {
     @State private var selectedFruit: String? = nil
     @State private var selectedColor: String? = nil
     @State private var selectedSize: String? = nil
+    @State private var selectedIconOption: Int? = nil
+    @State private var selectedPremiumFeature: String? = nil
+    @State private var selectedOutlineOption: String? = nil
     
     let fruits = [
         "Apple", "Banana", "Orange", "Grape", "Strawberry",
@@ -27,13 +30,10 @@ struct ContentView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 30) {
-                Text("Custom Menu Button Examples")
+                Text("CustomMenuKit Examples")
                     .font(.largeTitle)
                     .padding(.top)
-                
-                Text("SelectionMenu examples are searchable and auto-scroll")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+
                 
                 // Example 1: Default text button with searchable menu
                 SelectionMenu(
@@ -81,83 +81,137 @@ struct ContentView: View {
                         MenuButton(action: {
                             selectedSize = size
                         }) {
-                            Text(size)
+                            HStack {
+                                Text(size)
+                                Spacer()
+                                if selectedSize == size {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
                         }
                     }
                 }
                 
-                // Example 4: Icon-only circular button (with many items to show scrolling)
-                CustomMenu {
-                    Image(systemName: "ellipsis.circle.fill")
-                        .font(.system(size: 32))
-                        .foregroundColor(.gray)
-                } content: {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            ForEach(1...20, id: \.self) { index in
-                                if index > 1 {
-                                    Divider()
+                // Example 4: Icon-only circular button
+                VStack {
+                    CustomMenu {
+                        Image(systemName: "ellipsis.circle.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.gray)
+                    } content: {
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                ForEach(1...20, id: \.self) { index in
+                                    if index > 1 {
+                                        Divider()
+                                    }
+                                    MenuButton(action: { selectedIconOption = index }) {
+                                        Label {
+                                            Text("Option \(index)")
+                                        } icon: {
+                                            Image(systemName: "circle.fill")
+                                                .overlay(
+                                                    Circle()
+                                                        .stroke(Color.primary, lineWidth: selectedIconOption == index ? 2 : 0)
+                                                )
+                                        }
+                                    }
                                 }
-                                MenuButton(action: {}) {
-                                    Label("Option \(index)", systemImage: "circle.fill")
+                                Divider()
+                                MenuButton(role: .destructive, action: { selectedIconOption = nil }) {
+                                    Label("Clear Selection", systemImage: "trash")
                                 }
                             }
-                            Divider()
-                            MenuButton(role: .destructive, action: {}) {
-                                Label("Delete", systemImage: "trash")
-                            }
+                            .padding(.vertical, 8)
                         }
-                        .padding(.vertical, 8)
+                        .frame(maxHeight: 300)
                     }
-                    .frame(maxHeight: 300)
+                    if let selectedIconOption {
+                        Text("Selected: Option \(selectedIconOption)")
+                            .font(.caption)
+                            .padding(.top, 4)
+                    }
                 }
                 
                 // Example 5: Custom gradient button
-                CustomMenu {
-                    HStack {
-                        Image(systemName: "star.fill")
-                        Text("Premium Options")
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 14)
-                    .background(
-                        LinearGradient(
-                            colors: [.orange, .pink],
-                            startPoint: .leading,
-                            endPoint: .trailing
+                VStack {
+                    CustomMenu {
+                        HStack {
+                            Image(systemName: "star.fill")
+                            Text("Premium Options")
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 14)
+                        .background(
+                            LinearGradient(
+                                colors: [.orange, .pink],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
                         )
-                    )
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-                    .shadow(color: .pink.opacity(0.3), radius: 5, x: 0, y: 3)
-                } content: {
-                    MenuButton(action: {}) {
-                        Label("Premium Feature 1", systemImage: "crown")
+                        .foregroundColor(.white)
+                        .cornerRadius(12)
+                        .shadow(color: .pink.opacity(0.3), radius: 5, x: 0, y: 3)
+                    } content: {
+                        MenuButton(action: { selectedPremiumFeature = "Premium Feature 1" }) {
+                            HStack {
+                                Label("Premium Feature 1", systemImage: "crown")
+                                Spacer()
+                                if selectedPremiumFeature == "Premium Feature 1" {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                        MenuButton(action: { selectedPremiumFeature = "Premium Feature 2" }) {
+                            HStack {
+                                Label("Premium Feature 2", systemImage: "sparkles")
+                                Spacer()
+                                if selectedPremiumFeature == "Premium Feature 2" {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
                     }
-                    MenuButton(action: {}) {
-                        Label("Premium Feature 2", systemImage: "sparkles")
+                    if let selectedPremiumFeature {
+                        Text("Selected: \(selectedPremiumFeature)")
+                            .font(.caption)
+                            .padding(.top, 4)
                     }
                 }
                 
                 // Example 6: Outlined button
-                CustomMenu {
-                    HStack {
-                        Text("Options")
-                        Image(systemName: "chevron.down")
-                            .font(.caption)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                } content: {
-                    MenuButton(action: {}) {
-                        Text("Option 1")
-                    }
-                    MenuButton(action: {}) {
-                        Text("Option 2")
+                VStack {
+                    CustomMenu {
+                        HStack {
+                            Text(selectedOutlineOption ?? "Options")
+                            Image(systemName: "chevron.down")
+                                .font(.caption)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                    } content: {
+                        MenuButton(action: { selectedOutlineOption = "Option 1" }) {
+                            HStack {
+                                Text("Option 1")
+                                Spacer()
+                                if selectedOutlineOption == "Option 1" {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                        MenuButton(action: { selectedOutlineOption = "Option 2" }) {
+                            HStack {
+                                Text("Option 2")
+                                Spacer()
+                                if selectedOutlineOption == "Option 2" {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
                     }
                 }
                 
