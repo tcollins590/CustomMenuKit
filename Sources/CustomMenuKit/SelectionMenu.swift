@@ -15,18 +15,29 @@ public struct SelectionMenu<Label: View, T: Hashable>: View {
     @State private var searchText: String = ""
     @FocusState private var isSearchFocused: Bool
     
+    // Optional presentation control forwarded to CustomMenu
+    private let isPresentedExternal: Binding<Bool>?
+    private let onOpen: (() -> Void)?
+    private let onClose: (() -> Void)?
+    
     public init(
         selection: Binding<T?>,
         options: [T],
         @ViewBuilder label: @escaping (T?) -> Label,
         optionLabel: @escaping (T) -> String = { "\($0)" },
-        searchable: Bool = false
+        searchable: Bool = false,
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
     ) {
         self._selection = selection
         self.options = options
         self.label = label
         self.optionLabel = optionLabel
         self.searchable = searchable
+        self.isPresentedExternal = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
     }
     
     private var filteredOptions: [T] {
@@ -40,7 +51,7 @@ public struct SelectionMenu<Label: View, T: Hashable>: View {
     }
     
     public var body: some View {
-        CustomMenu {
+        CustomMenu(isPresented: isPresentedExternal, onOpen: onOpen, onClose: onClose) {
             label(selection)
         } content: {
             VStack(spacing: 0) {
@@ -160,14 +171,20 @@ extension SelectionMenu where Label == Text {
         options: [T],
         label: @escaping (T?) -> String,
         optionLabel: @escaping (T) -> String = { "\($0)" },
-        searchable: Bool = false
+        searchable: Bool = false,
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
     ) {
         self.init(
             selection: selection,
             options: options,
             label: { Text(label($0)) },
             optionLabel: optionLabel,
-            searchable: searchable
+            searchable: searchable,
+            isPresented: isPresented,
+            onOpen: onOpen,
+            onClose: onClose
         )
     }
 } 

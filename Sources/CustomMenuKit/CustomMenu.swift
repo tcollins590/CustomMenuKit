@@ -8,17 +8,47 @@ import UIKit
 public struct CustomMenu<Label: View, Content: View>: View {
     private let labelBuilder: () -> Label
     private let contentBuilder: () -> Content
+    // Optional external presentation binding supplied by the caller (opt-in)
+    private let externalIsPresented: Binding<Bool>?
+    // Optional lifecycle callbacks
+    private let onOpen: (() -> Void)?
+    private let onClose: (() -> Void)?
     
-    @State private var isPresented: Bool = false
+    // Internal fallback state when the caller did not provide a binding
+    @State private var internalIsPresented: Bool = false
     
-    public init(@ViewBuilder label: @escaping () -> Label,
-                @ViewBuilder content: @escaping () -> Content) {
+    // Unified binding (either external or our own @State)
+    private var isPresentedBinding: Binding<Bool> {
+        externalIsPresented ?? $internalIsPresented
+    }
+    
+    // MARK: - Initialisers
+    /// Primary initialiser. Extra parameters are fully optional so existing call-sites remain valid.
+    public init(
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil,
+        @ViewBuilder label: @escaping () -> Label,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.externalIsPresented = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
         self.labelBuilder = label
         self.contentBuilder = content
     }
     
     /// Convenience initializer mirroring `Menu` that takes a `String` title.
-    public init(_ title: String, @ViewBuilder content: @escaping () -> Content) where Label == Text {
+    public init(
+        _ title: String,
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) where Label == Text {
+        self.externalIsPresented = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
         self.labelBuilder = { Text(title) }
         self.contentBuilder = content
     }
@@ -29,24 +59,30 @@ public struct CustomMenu<Label: View, Content: View>: View {
         options: [T],
         label: @escaping (T?) -> String,
         optionLabel: @escaping (T) -> String,
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) where Label == Text {
+        self.externalIsPresented = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
         self.labelBuilder = { Text(label(selection.wrappedValue)) }
         self.contentBuilder = content
     }
     
     public var body: some View {
         Button(action: {
-            isPresented = true
+            isPresentedBinding.wrappedValue = true
         }) {
             labelBuilder()
         }
-        .popover(isPresented: $isPresented) {
-            if #available(iOS 16.4, *) {
+        .popover(isPresented: isPresentedBinding) {
+            if #available(iOS 16.4, macOS 13.3, *) {
                 VStack(alignment: .leading, spacing: 0) {
                     contentBuilder()
                         .environment(\.menuDismiss) {
-                            isPresented = false
+                            isPresentedBinding.wrappedValue = false
                         }
                 }
                 .frame(idealWidth: 280, maxHeight: 400)
@@ -55,10 +91,18 @@ public struct CustomMenu<Label: View, Content: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     contentBuilder()
                         .environment(\.menuDismiss) {
-                            isPresented = false
+                            isPresentedBinding.wrappedValue = false
                         }
                 }
                 .frame(idealWidth: 280, maxHeight: 400)
+            }
+        }
+        // Lifecycle callbacks
+        .onChange(of: isPresentedBinding.wrappedValue) { newValue in
+            if newValue {
+                onOpen?()
+            } else {
+                onClose?()
             }
         }
     }

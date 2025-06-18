@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C77A7EF02DF9F49000A99E74 /* CustomMenuKit in Frameworks */ = {isa = PBXBuildFile; productRef = C77A7EEF2DF9F49000A99E74 /* CustomMenuKit */; };
+		2F8F81702E02E4CC00E1A485 /* CustomMenuKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2F8F816F2E02E4CC00E1A485 /* CustomMenuKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C77A7EF02DF9F49000A99E74 /* CustomMenuKit in Frameworks */,
+				2F8F81702E02E4CC00E1A485 /* CustomMenuKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,7 +70,7 @@
 			);
 			name = CustomMenuKitDemo;
 			packageProductDependencies = (
-				C77A7EEF2DF9F49000A99E74 /* CustomMenuKit */,
+				2F8F816F2E02E4CC00E1A485 /* CustomMenuKit */,
 			);
 			productName = CustomMenuKitDemo;
 			productReference = C77A7ED82DF9F35500A99E74 /* CustomMenuKitDemo.app */;
@@ -101,7 +101,7 @@
 			mainGroup = C77A7ECF2DF9F35500A99E74;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C77A7EEE2DF9F49000A99E74 /* XCLocalSwiftPackageReference "../../CustomMenuKit" */,
+				2F8F816E2E02E4CC00E1A485 /* XCLocalSwiftPackageReference "../../CustomMenuKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C77A7ED92DF9F35500A99E74 /* Products */;
@@ -354,14 +354,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		C77A7EEE2DF9F49000A99E74 /* XCLocalSwiftPackageReference "../../CustomMenuKit" */ = {
+		2F8F816E2E02E4CC00E1A485 /* XCLocalSwiftPackageReference "../../CustomMenuKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../CustomMenuKit;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C77A7EEF2DF9F49000A99E74 /* CustomMenuKit */ = {
+		2F8F816F2E02E4CC00E1A485 /* CustomMenuKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CustomMenuKit;
 		};

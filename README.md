@@ -13,6 +13,8 @@ A customizable, drop-in replacement for SwiftUI's `Menu`, designed to provide an
 - **Highly Customizable**: Both the menu's label and its content can be customized with any SwiftUI `View`.
 - **Single-Selection Support**: Built-in support for menus that manage a single selection from a list of options, complete with checkmarks.
 - **Auto-Dismiss**: Menu items automatically dismiss the menu after their action is performed.
+- **External Presentation Control (opt-in)**: Drive the menu's visibility with a `Binding<Bool>` if you need programmatic control.
+- **Lifecycle Callbacks (opt-in)**: Be notified whenever a menu opens/closes via `onOpen` / `onClose` closures.
 
 ## Installation
 
@@ -88,9 +90,56 @@ SelectionMenu(
 )
 ```
 
+### Driving menu visibility yourself
+
+If you need to open or close a menu from the outside (for example in response to some other piece of UI), pass a `Binding<Bool>` called `isPresented`:
+
+```swift
+@State private var showMenu = false
+
+CustomMenu(isPresented: $showMenu) {
+    Label("More", systemImage: "ellipsis.circle")
+} content: {
+    MenuButton { /* … */ } label: { Text("Option 1") }
+    MenuButton { /* … */ } label: { Text("Option 2") }
+}
+
+// Somewhere else …
+showMenu = true     // the menu appears
+```
+
+The parameter is optional; omit it and the menu behaves exactly like the standard `Menu`.
+
+`SelectionMenu` exposes the same capability:
+
+```swift
+SelectionMenu(
+    selection: $picked,
+    options: fruits,
+    label: { $0 ?? "Fruit" },
+    isPresented: $showMenu          // opt-in binding
+)
+```
+
+### Reacting to menu lifecycle events
+
+Sometimes you just want to know when a menu appears or disappears without manually controlling it. Use the `onOpen` / `onClose` callback closures:
+
+```swift
+SelectionMenu(
+    selection: $picked,
+    options: fruits,
+    label: { $0 ?? "Fruit" },
+    onOpen:  { analytics.track("menu_open") },
+    onClose: { analytics.track("menu_close") }
+)
+```
+
+Both callbacks are optional and fire immediately after the presentation state changes.
+
 ### Customizing the Label
 
-The label for both `CustomMenu` and `SelectionMenu` can be any SwiftUI `View`.
+The label for both `CustomMenu` and `SelectionMenu` can be any SwiftUI `View`:
 
 ```swift
 SelectionMenu(
