@@ -128,8 +128,6 @@ public struct MenuButton<Label: View>: View {
     let label: () -> Label
     
     @Environment(\.menuDismiss) private var dismiss
-    @State private var isPressed: Bool = false
-    @GestureState private var dragAmount = CGSize.zero
     
     public init(role: ButtonRole? = nil, action: @escaping () -> Void, @ViewBuilder label: @escaping () -> Label) {
         self.role = role
@@ -138,39 +136,18 @@ public struct MenuButton<Label: View>: View {
     }
     
     public var body: some View {
-        HStack {
-            label()
-            Spacer()
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 12)
-        .contentShape(Rectangle())
-        .foregroundColor(role == .destructive ? .red : nil)
-        .background(isPressed ? Color.gray.opacity(0.1) : Color.clear)
-        .onTapGesture {
+        Button(role: role) {
             action()
             dismiss()
+        } label: {
+            HStack {
+                label()
+                Spacer()
+            }
+            .contentShape(Rectangle())
+            .foregroundColor(role == .destructive ? .red : nil)
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .updating($dragAmount) { value, state, _ in
-                    state = value.translation
-                }
-                .onChanged { _ in
-                    isPressed = false
-                }
-        )
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0)
-                .onChanged { _ in
-                    if dragAmount == .zero {
-                        isPressed = true
-                    }
-                }
-                .onEnded { _ in
-                    isPressed = false
-                }
-        )
+        .buttonStyle(MenuRowButtonStyle())
     }
 }
 
@@ -182,3 +159,15 @@ extension Divider {
             .padding(.vertical, 4)
     }
 } 
+
+// MARK: - Button Style
+/// A button style that provides the pressed highlight behavior used by menu rows
+public struct MenuRowButtonStyle: ButtonStyle {
+    public init() {}
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+            .background(configuration.isPressed ? Color.gray.opacity(0.1) : Color.clear)
+    }
+}

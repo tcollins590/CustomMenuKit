@@ -125,6 +125,8 @@ struct ContentView: View {
                             .padding(.vertical, 8)
                         }
                         .frame(maxHeight: 300)
+                        .contentMargins(16, for: .scrollIndicators)
+                        .padding(.trailing, 1)
                     }
                     if let selectedIconOption {
                         Text("Selected: Option \(selectedIconOption)")
