@@ -5,16 +5,17 @@ import UIKit
 
 // MARK: - SelectionMenu
 /// A menu designed for single selection with checkmarks
-public struct SelectionMenu<Label: View, T: Hashable>: View {
+public struct SelectionMenu<Label: View, T: Hashable, Header: View>: View {
     @Binding var selection: T?
     let options: [T]
     let label: (T?) -> Label
     let optionLabel: (T) -> String
     let searchable: Bool
-    
+    let headerBuilder: (() -> Header)?
+
     @State private var searchText: String = ""
     @FocusState private var isSearchFocused: Bool
-    
+
     // Optional presentation control forwarded to CustomMenu
     private let isPresentedExternal: Binding<Bool>?
     private let onOpen: (() -> Void)?
@@ -28,7 +29,8 @@ public struct SelectionMenu<Label: View, T: Hashable>: View {
         searchable: Bool = false,
         isPresented: Binding<Bool>? = nil,
         onOpen: (() -> Void)? = nil,
-        onClose: (() -> Void)? = nil
+        onClose: (() -> Void)? = nil,
+        header: (() -> Header)? = nil
     ) {
         self._selection = selection
         self.options = options
@@ -38,6 +40,7 @@ public struct SelectionMenu<Label: View, T: Hashable>: View {
         self.isPresentedExternal = isPresented
         self.onOpen = onOpen
         self.onClose = onClose
+        self.headerBuilder = header
     }
     
     private var filteredOptions: [T] {
@@ -55,6 +58,11 @@ public struct SelectionMenu<Label: View, T: Hashable>: View {
             label(selection)
         } content: {
             VStack(spacing: 0) {
+                // Custom header view (if provided)
+                if let headerBuilder = headerBuilder {
+                    headerBuilder()
+                }
+
                 if searchable {
                     HStack {
                         Image(systemName: "magnifyingglass")
@@ -174,6 +182,60 @@ extension SelectionMenu where Label == Text {
         searchable: Bool = false,
         isPresented: Binding<Bool>? = nil,
         onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil,
+        header: (() -> Header)? = nil
+    ) {
+        self.init(
+            selection: selection,
+            options: options,
+            label: { Text(label($0)) },
+            optionLabel: optionLabel,
+            searchable: searchable,
+            isPresented: isPresented,
+            onOpen: onOpen,
+            onClose: onClose,
+            header: header
+        )
+    }
+}
+
+// MARK: - Backwards Compatibility
+extension SelectionMenu where Header == EmptyView {
+    /// Convenience initializer without header (backwards compatible)
+    public init(
+        selection: Binding<T?>,
+        options: [T],
+        @ViewBuilder label: @escaping (T?) -> Label,
+        optionLabel: @escaping (T) -> String = { "\($0)" },
+        searchable: Bool = false,
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
+    ) {
+        self.init(
+            selection: selection,
+            options: options,
+            label: label,
+            optionLabel: optionLabel,
+            searchable: searchable,
+            isPresented: isPresented,
+            onOpen: onOpen,
+            onClose: onClose,
+            header: nil
+        )
+    }
+}
+
+extension SelectionMenu where Label == Text, Header == EmptyView {
+    /// Convenience initializer without header (backwards compatible)
+    public init(
+        selection: Binding<T?>,
+        options: [T],
+        label: @escaping (T?) -> String,
+        optionLabel: @escaping (T) -> String = { "\($0)" },
+        searchable: Bool = false,
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
         onClose: (() -> Void)? = nil
     ) {
         self.init(
@@ -184,7 +246,8 @@ extension SelectionMenu where Label == Text {
             searchable: searchable,
             isPresented: isPresented,
             onOpen: onOpen,
-            onClose: onClose
+            onClose: onClose,
+            header: nil
         )
     }
 } 

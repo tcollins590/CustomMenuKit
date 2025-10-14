@@ -15,6 +15,7 @@ struct ContentView: View {
     @State private var selectedIconOption: Int? = nil
     @State private var selectedPremiumFeature: String? = nil
     @State private var selectedOutlineOption: String? = nil
+    @State private var selectedColorTab = 0
     
     let fruits = [
         "Apple", "Banana", "Orange", "Grape", "Strawberry",
@@ -61,7 +62,21 @@ struct ContentView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                     },
-                    searchable: true
+                    searchable: true,
+                    header: {
+                        VStack(spacing: 0) {
+                            Picker("", selection: $selectedColorTab) {
+                                Text("Primary").tag(0)
+                                Text("Secondary").tag(1)
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.horizontal)
+                            .padding(.top, 12)
+                            .padding(.bottom, 8)
+
+                            Divider()
+                        }
+                    }
                 )
                 
                 // Example 3: Capsule style button
