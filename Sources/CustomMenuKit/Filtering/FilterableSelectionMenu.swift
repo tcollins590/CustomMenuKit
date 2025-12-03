@@ -88,8 +88,27 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable>: View {
         filteredAllItems.contains(item)
     }
 
+    /// Find the group ID that contains the given item
+    private func groupContaining(_ item: T?) -> UUID? {
+        guard let item = item else { return nil }
+        return groups.first { $0.items.contains(item) }?.id
+    }
+
+    /// Expand the folder containing the current selection
+    private func expandSelectionFolder() {
+        if let groupID = groupContaining(selection) {
+            expandedGroups.insert(groupID)
+        }
+    }
+
+    /// Handle menu open - expand selection folder and call user's onOpen
+    private func handleMenuOpen() {
+        expandSelectionFolder()
+        onOpen?()
+    }
+
     public var body: some View {
-        CustomMenu(isPresented: isPresentedExternal, onOpen: onOpen, onClose: onClose) {
+        CustomMenu(isPresented: isPresentedExternal, onOpen: handleMenuOpen, onClose: onClose) {
             label(selection)
         } content: {
             VStack(spacing: 0) {
@@ -116,6 +135,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable>: View {
             }
         }
         .onAppear {
+            expandSelectionFolder()
             if searchable {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     isSearchFocused = true
