@@ -57,38 +57,37 @@ struct ContentView: View {
     let sizes = ["Small", "Medium", "Large", "Extra Large"]
 
     // Employees grouped by department for folder demo
-    var employeeGroups: [MenuItemGroup<Employee>] {
-        [
-            MenuItemGroup(
-                name: "Engineering",
-                systemImage: "hammer",
-                items: [
-                    Employee(id: UUID(), name: "Alice Johnson", department: "Engineering", location: "New York"),
-                    Employee(id: UUID(), name: "Carol Williams", department: "Engineering", location: "San Francisco"),
-                    Employee(id: UUID(), name: "Eva Martinez", department: "Engineering", location: "New York"),
-                    Employee(id: UUID(), name: "Henry Chen", department: "Engineering", location: "San Francisco"),
-                ]
-            ),
-            MenuItemGroup(
-                name: "Design",
-                systemImage: "paintbrush",
-                items: [
-                    Employee(id: UUID(), name: "Bob Smith", department: "Design", location: "San Francisco"),
-                    Employee(id: UUID(), name: "Frank Lee", department: "Design", location: "Chicago"),
-                    Employee(id: UUID(), name: "Ivy Taylor", department: "Design", location: "New York"),
-                ]
-            ),
-            MenuItemGroup(
-                name: "Marketing",
-                systemImage: "megaphone",
-                items: [
-                    Employee(id: UUID(), name: "David Brown", department: "Marketing", location: "Chicago"),
-                    Employee(id: UUID(), name: "Grace Kim", department: "Marketing", location: "New York"),
-                    Employee(id: UUID(), name: "Jack Wilson", department: "Marketing", location: "San Francisco"),
-                ]
-            ),
-        ]
-    }
+    // Note: Using static UUIDs so employees remain stable across view updates
+    let employeeGroups: [MenuItemGroup<Employee>] = [
+        MenuItemGroup(
+            name: "Engineering",
+            systemImage: "hammer",
+            items: [
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, name: "Alice Johnson", department: "Engineering", location: "New York"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!, name: "Carol Williams", department: "Engineering", location: "San Francisco"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!, name: "Eva Martinez", department: "Engineering", location: "New York"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!, name: "Henry Chen", department: "Engineering", location: "San Francisco"),
+            ]
+        ),
+        MenuItemGroup(
+            name: "Design",
+            systemImage: "paintbrush",
+            items: [
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!, name: "Bob Smith", department: "Design", location: "San Francisco"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000006")!, name: "Frank Lee", department: "Design", location: "Chicago"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000007")!, name: "Ivy Taylor", department: "Design", location: "New York"),
+            ]
+        ),
+        MenuItemGroup(
+            name: "Marketing",
+            systemImage: "megaphone",
+            items: [
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000008")!, name: "David Brown", department: "Marketing", location: "Chicago"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000009")!, name: "Grace Kim", department: "Marketing", location: "New York"),
+                Employee(id: UUID(uuidString: "00000000-0000-0000-0000-000000000010")!, name: "Jack Wilson", department: "Marketing", location: "San Francisco"),
+            ]
+        ),
+    ]
 
     var body: some View {
         ScrollView {
