@@ -8,6 +8,33 @@
 import SwiftUI
 import CustomMenuKit
 
+// MARK: - Sample Filterable Data Model
+struct Employee: Filterable {
+    let id: UUID
+    let name: String
+    let department: String
+    let location: String
+
+    enum FilterKey: String, CaseIterable, CustomStringConvertible {
+        case department
+        case location
+
+        var description: String { rawValue.capitalized }
+    }
+
+    func filterValue(for key: FilterKey) -> AnyHashable {
+        switch key {
+        case .department: return department
+        case .location: return location
+        }
+    }
+
+    static func allFilterValues(for key: FilterKey, in items: [Employee]) -> [AnyHashable] {
+        let values = Set(items.map { $0.filterValue(for: key) })
+        return Array(values).sorted { "\($0)" < "\($1)" }
+    }
+}
+
 struct ContentView: View {
     @State private var selectedFruit: String? = nil
     @State private var selectedColor: String? = nil
@@ -16,7 +43,8 @@ struct ContentView: View {
     @State private var selectedPremiumFeature: String? = nil
     @State private var selectedOutlineOption: String? = nil
     @State private var selectedColorTab = 0
-    
+    @State private var selectedEmployee: Employee? = nil
+
     let fruits = [
         "Apple", "Banana", "Orange", "Grape", "Strawberry",
         "Mango", "Pineapple", "Watermelon", "Peach", "Pear",
@@ -24,10 +52,44 @@ struct ContentView: View {
         "Lime", "Coconut", "Papaya", "Pomegranate", "Apricot",
         "Plum", "Fig", "Date", "Guava", "Passion Fruit"
     ]
-    
+
     let colors = ["Red", "Blue", "Green", "Yellow", "Purple", "Orange"]
     let sizes = ["Small", "Medium", "Large", "Extra Large"]
-    
+
+    // Employees grouped by department for folder demo
+    var employeeGroups: [MenuItemGroup<Employee>] {
+        [
+            MenuItemGroup(
+                name: "Engineering",
+                systemImage: "hammer",
+                items: [
+                    Employee(id: UUID(), name: "Alice Johnson", department: "Engineering", location: "New York"),
+                    Employee(id: UUID(), name: "Carol Williams", department: "Engineering", location: "San Francisco"),
+                    Employee(id: UUID(), name: "Eva Martinez", department: "Engineering", location: "New York"),
+                    Employee(id: UUID(), name: "Henry Chen", department: "Engineering", location: "San Francisco"),
+                ]
+            ),
+            MenuItemGroup(
+                name: "Design",
+                systemImage: "paintbrush",
+                items: [
+                    Employee(id: UUID(), name: "Bob Smith", department: "Design", location: "San Francisco"),
+                    Employee(id: UUID(), name: "Frank Lee", department: "Design", location: "Chicago"),
+                    Employee(id: UUID(), name: "Ivy Taylor", department: "Design", location: "New York"),
+                ]
+            ),
+            MenuItemGroup(
+                name: "Marketing",
+                systemImage: "megaphone",
+                items: [
+                    Employee(id: UUID(), name: "David Brown", department: "Marketing", location: "Chicago"),
+                    Employee(id: UUID(), name: "Grace Kim", department: "Marketing", location: "New York"),
+                    Employee(id: UUID(), name: "Jack Wilson", department: "Marketing", location: "San Francisco"),
+                ]
+            ),
+        ]
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 30) {
@@ -35,7 +97,7 @@ struct ContentView: View {
                     .font(.largeTitle)
                     .padding(.top)
 
-                
+
                 // Example 1: Default text button with searchable menu
                 SelectionMenu(
                     selection: $selectedFruit,
@@ -43,7 +105,7 @@ struct ContentView: View {
                     label: { $0 ?? "Select a fruit" },
                     searchable: true
                 )
-                
+
                 // Example 2: Rounded rectangle button with SelectionMenu (searchable)
                 SelectionMenu(
                     selection: $selectedColor,
@@ -78,8 +140,8 @@ struct ContentView: View {
                         }
                     }
                 )
-                
-                // Example 3: Capsule style button
+
+                // Example 3: Capsule style button with MenuFolder
                 CustomMenu {
                     HStack {
                         Text(selectedSize ?? "Size")
@@ -105,9 +167,27 @@ struct ContentView: View {
                             }
                         }
                     }
+
+                    Divider().menuDividerStyle()
+
+                    // MenuFolder example
+                    MenuFolder("Size Guide", systemImage: "ruler") {
+                        MenuButton(action: {}) {
+                            Text("Small: 0-10 lbs")
+                        }
+                        MenuButton(action: {}) {
+                            Text("Medium: 10-25 lbs")
+                        }
+                        MenuButton(action: {}) {
+                            Text("Large: 25-50 lbs")
+                        }
+                        MenuButton(action: {}) {
+                            Text("Extra Large: 50+ lbs")
+                        }
+                    }
                 }
-                
-                // Example 4: Icon-only circular button
+
+                // Example 4: Icon-only circular button with nested folders
                 VStack {
                     CustomMenu {
                         Image(systemName: "ellipsis.circle.fill")
@@ -116,8 +196,30 @@ struct ContentView: View {
                     } content: {
                         ScrollView {
                             VStack(spacing: 0) {
-                                ForEach(1...20, id: \.self) { index in
-                                    if index > 1 {
+                                MenuFolder("Recent Items", systemImage: "clock") {
+                                    ForEach(1...3, id: \.self) { index in
+                                        if index > 1 { Divider() }
+                                        MenuButton(action: { selectedIconOption = index }) {
+                                            Label("Recent \(index)", systemImage: "doc")
+                                        }
+                                    }
+                                }
+
+                                Divider()
+
+                                MenuFolder("Favorites", systemImage: "star") {
+                                    ForEach(4...6, id: \.self) { index in
+                                        if index > 4 { Divider() }
+                                        MenuButton(action: { selectedIconOption = index }) {
+                                            Label("Favorite \(index - 3)", systemImage: "star.fill")
+                                        }
+                                    }
+                                }
+
+                                Divider()
+
+                                ForEach(7...10, id: \.self) { index in
+                                    if index > 7 {
                                         Divider()
                                     }
                                     MenuButton(action: { selectedIconOption = index }) {
@@ -132,14 +234,16 @@ struct ContentView: View {
                                         }
                                     }
                                 }
+
                                 Divider()
+
                                 MenuButton(role: .destructive, action: { selectedIconOption = nil }) {
                                     Label("Clear Selection", systemImage: "trash")
                                 }
                             }
                             .padding(.vertical, 8)
                         }
-                        .frame(maxHeight: 300)
+                        .frame(maxHeight: 350)
                         .contentMargins(16, for: .scrollIndicators)
                         .padding(.trailing, 1)
                     }
@@ -149,7 +253,7 @@ struct ContentView: View {
                             .padding(.top, 4)
                     }
                 }
-                
+
                 // Example 5: Custom gradient button
                 VStack {
                     CustomMenu {
@@ -195,7 +299,7 @@ struct ContentView: View {
                             .padding(.top, 4)
                     }
                 }
-                
+
                 // Example 6: Outlined button
                 VStack {
                     CustomMenu {
@@ -231,13 +335,64 @@ struct ContentView: View {
                         }
                     }
                 }
-                
+
+                // Example 7: FilterableSelectionMenu with folders and smart search
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Filterable Menu with Folders")
+                        .font(.headline)
+
+                    Text("Try searching 'Engineering' or 'Alice'")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    FilterableSelectionMenu(
+                        selection: $selectedEmployee,
+                        groups: employeeGroups,
+                        label: { employee in
+                            HStack {
+                                Image(systemName: "person.circle.fill")
+                                    .font(.title2)
+                                Text(employee?.name ?? "Select Employee")
+                                Spacer()
+                                Image(systemName: "chevron.down")
+                                    .font(.caption)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(Color.green.opacity(0.15))
+                            .foregroundColor(.green)
+                            .cornerRadius(10)
+                        },
+                        optionLabel: { $0.name },
+                        searchable: true,
+                        filterable: true,
+                        filterValueLabel: { "\($0)" }
+                    )
+
+                    if let employee = selectedEmployee {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Selected: \(employee.name)")
+                                .font(.caption)
+                            Text("Department: \(employee.department)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text("Location: \(employee.location)")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding(.top, 4)
+                    }
+                }
+                .padding()
+                .background(Color.gray.opacity(0.05))
+                .cornerRadius(12)
+
                 Spacer(minLength: 100)
             }
             .padding()
         }
     }
-    
+
     func colorForName(_ name: String) -> Color {
         switch name {
         case "Red": return .red
