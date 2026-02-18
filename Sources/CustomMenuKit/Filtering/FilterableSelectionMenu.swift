@@ -6,13 +6,14 @@ import UIKit
 // MARK: - FilterableSelectionMenu
 /// A menu designed for single selection with checkmarks, search, and filtering capabilities.
 /// Use this when your data type conforms to `Filterable` and you need advanced filtering.
-public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: View>: View {
+public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: View, TrailingAction: View>: View {
     @Binding var selection: T?
     let options: [T]
     let groups: [MenuItemGroup<T>]
     let label: (T?) -> Label
     let optionLabel: (T) -> String
     let optionIcon: ((T) -> OptionIcon)?
+    let trailingAction: ((T) -> TrailingAction)?
     let searchable: Bool
     let filterable: Bool
     let filterValueLabel: (AnyHashable) -> String
@@ -32,7 +33,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         HierarchicalMenuContent(groups: groups, ungroupedItems: options)
     }
 
-    /// Creates a filterable selection menu with optional folder groupings and custom icons.
+    /// Creates a filterable selection menu with optional folder groupings, custom icons, and trailing actions.
     /// - Parameters:
     ///   - selection: Binding to the currently selected item.
     ///   - options: Array of ungrouped options to display.
@@ -40,6 +41,8 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     ///   - label: ViewBuilder for the menu's trigger label.
     ///   - optionLabel: Closure to get display text for each option.
     ///   - optionIcon: Optional ViewBuilder closure to render an icon for each option.
+    ///   - trailingAction: Optional ViewBuilder closure to render a trailing action button for each option.
+    ///     The trailing action does NOT dismiss the menu, allowing multiple interactions.
     ///   - searchable: Whether to show a search bar. Defaults to `true`.
     ///   - filterable: Whether to show the filter button. Defaults to `true`.
     ///   - filterValueLabel: Closure to convert filter values to display strings.
@@ -53,6 +56,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         @ViewBuilder label: @escaping (T?) -> Label,
         optionLabel: @escaping (T) -> String = { "\($0)" },
         @ViewBuilder optionIcon: @escaping (T) -> OptionIcon,
+        @ViewBuilder trailingAction: @escaping (T) -> TrailingAction,
         searchable: Bool = true,
         filterable: Bool = true,
         filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
@@ -66,6 +70,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         self.label = label
         self.optionLabel = optionLabel
         self.optionIcon = optionIcon
+        self.trailingAction = trailingAction
         self.searchable = searchable
         self.filterable = filterable
         self.filterValueLabel = filterValueLabel
@@ -169,6 +174,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                     selection: $selection,
                     optionLabel: optionLabel,
                     optionIcon: optionIcon,
+                    trailingAction: trailingAction,
                     onToggleExpand: {
                         withAnimation(.easeInOut(duration: 0.25)) {
                             if expandedGroups.contains(group.id) {
@@ -231,6 +237,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                         selection: $selection,
                         optionLabel: optionLabel,
                         optionIcon: optionIcon,
+                        trailingAction: trailingAction,
                         onToggleExpand: {}, // No-op in search mode
                         onSelect: { item in
                             selectItem(item)
@@ -274,6 +281,11 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                     }
                 }
                 Spacer()
+                // Trailing action (does not dismiss menu)
+                if let actionBuilder = trailingAction {
+                    actionBuilder(item)
+                        .onTapGesture {} // Absorb tap so MenuButton doesn't fire
+                }
                 if selection == item {
                     Image(systemName: "checkmark")
                         .font(.system(size: 14, weight: .semibold))
@@ -394,15 +406,113 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     }
 }
 
+// MARK: - No Trailing Action Convenience
+extension FilterableSelectionMenu where TrailingAction == EmptyView {
+    /// Creates a filterable selection menu with icons but no trailing actions.
+    public init(
+        selection: Binding<T?>,
+        options: [T] = [],
+        groups: [MenuItemGroup<T>] = [],
+        @ViewBuilder label: @escaping (T?) -> Label,
+        optionLabel: @escaping (T) -> String = { "\($0)" },
+        @ViewBuilder optionIcon: @escaping (T) -> OptionIcon,
+        searchable: Bool = true,
+        filterable: Bool = true,
+        filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
+    ) {
+        self._selection = selection
+        self.options = options
+        self.groups = groups
+        self.label = label
+        self.optionLabel = optionLabel
+        self.optionIcon = optionIcon
+        self.trailingAction = nil
+        self.searchable = searchable
+        self.filterable = filterable
+        self.filterValueLabel = filterValueLabel
+        self.isPresentedExternal = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
+    }
+}
+
+// MARK: - No Icon Convenience
+extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction == EmptyView {
+    /// Creates a filterable selection menu without custom icons.
+    public init(
+        selection: Binding<T?>,
+        options: [T] = [],
+        groups: [MenuItemGroup<T>] = [],
+        @ViewBuilder label: @escaping (T?) -> Label,
+        optionLabel: @escaping (T) -> String = { "\($0)" },
+        searchable: Bool = true,
+        filterable: Bool = true,
+        filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
+    ) {
+        self._selection = selection
+        self.options = options
+        self.groups = groups
+        self.label = label
+        self.optionLabel = optionLabel
+        self.optionIcon = nil
+        self.trailingAction = nil
+        self.searchable = searchable
+        self.filterable = filterable
+        self.filterValueLabel = filterValueLabel
+        self.isPresentedExternal = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
+    }
+}
+
+// MARK: - Text Label Convenience
+extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView, TrailingAction == EmptyView {
+    /// Creates a filterable selection menu with a text label and no icons.
+    public init(
+        selection: Binding<T?>,
+        options: [T] = [],
+        groups: [MenuItemGroup<T>] = [],
+        label: @escaping (T?) -> String,
+        optionLabel: @escaping (T) -> String = { "\($0)" },
+        searchable: Bool = true,
+        filterable: Bool = true,
+        filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
+    ) {
+        self._selection = selection
+        self.options = options
+        self.groups = groups
+        self.label = { Text(label($0)) }
+        self.optionLabel = optionLabel
+        self.optionIcon = nil
+        self.trailingAction = nil
+        self.searchable = searchable
+        self.filterable = filterable
+        self.filterValueLabel = filterValueLabel
+        self.isPresentedExternal = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
+    }
+}
+
 // MARK: - FolderRow
 /// Internal view for rendering a folder with expandable content.
-private struct FolderRow<T: Hashable, OptionIcon: View>: View {
+private struct FolderRow<T: Hashable, OptionIcon: View, TrailingAction: View>: View {
     let group: MenuItemGroup<T>
     let filteredItems: [T]
     let isExpanded: Bool
     @Binding var selection: T?
     let optionLabel: (T) -> String
     let optionIcon: ((T) -> OptionIcon)?
+    let trailingAction: ((T) -> TrailingAction)?
     let onToggleExpand: () -> Void
     let onSelect: (T) -> Void
 
@@ -449,6 +559,11 @@ private struct FolderRow<T: Hashable, OptionIcon: View>: View {
 
                             Text(optionLabel(item))
                             Spacer()
+                            // Trailing action (does not dismiss menu)
+                            if let actionBuilder = trailingAction {
+                                actionBuilder(item)
+                                    .onTapGesture {} // Absorb tap so MenuButton doesn't fire
+                            }
                             if selection == item {
                                 Image(systemName: "checkmark")
                                     .font(.system(size: 14, weight: .semibold))
@@ -463,67 +578,5 @@ private struct FolderRow<T: Hashable, OptionIcon: View>: View {
             .clipped()
             .opacity(isExpanded ? 1 : 0)
         }
-    }
-}
-
-// MARK: - No Icon Convenience
-extension FilterableSelectionMenu where OptionIcon == EmptyView {
-    /// Creates a filterable selection menu without custom icons.
-    public init(
-        selection: Binding<T?>,
-        options: [T] = [],
-        groups: [MenuItemGroup<T>] = [],
-        @ViewBuilder label: @escaping (T?) -> Label,
-        optionLabel: @escaping (T) -> String = { "\($0)" },
-        searchable: Bool = true,
-        filterable: Bool = true,
-        filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
-        isPresented: Binding<Bool>? = nil,
-        onOpen: (() -> Void)? = nil,
-        onClose: (() -> Void)? = nil
-    ) {
-        self._selection = selection
-        self.options = options
-        self.groups = groups
-        self.label = label
-        self.optionLabel = optionLabel
-        self.optionIcon = nil
-        self.searchable = searchable
-        self.filterable = filterable
-        self.filterValueLabel = filterValueLabel
-        self.isPresentedExternal = isPresented
-        self.onOpen = onOpen
-        self.onClose = onClose
-    }
-}
-
-// MARK: - Text Label Convenience
-extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView {
-    /// Creates a filterable selection menu with a text label and no icons.
-    public init(
-        selection: Binding<T?>,
-        options: [T] = [],
-        groups: [MenuItemGroup<T>] = [],
-        label: @escaping (T?) -> String,
-        optionLabel: @escaping (T) -> String = { "\($0)" },
-        searchable: Bool = true,
-        filterable: Bool = true,
-        filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
-        isPresented: Binding<Bool>? = nil,
-        onOpen: (() -> Void)? = nil,
-        onClose: (() -> Void)? = nil
-    ) {
-        self._selection = selection
-        self.options = options
-        self.groups = groups
-        self.label = { Text(label($0)) }
-        self.optionLabel = optionLabel
-        self.optionIcon = nil
-        self.searchable = searchable
-        self.filterable = filterable
-        self.filterValueLabel = filterValueLabel
-        self.isPresentedExternal = isPresented
-        self.onOpen = onOpen
-        self.onClose = onClose
     }
 }
