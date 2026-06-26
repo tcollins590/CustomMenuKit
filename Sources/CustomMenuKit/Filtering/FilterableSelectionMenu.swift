@@ -3,6 +3,18 @@ import SwiftUI
 import UIKit
 #endif
 
+// MARK: - MenuSelectionStyle
+/// How the selected row is indicated in a ``FilterableSelectionMenu``.
+public enum MenuSelectionStyle {
+    /// A trailing checkmark on the selected row. This is the default and the
+    /// original behavior.
+    case checkmark
+    /// The selected row's label is rendered accent-tinted and semibold, with no
+    /// checkmark. Useful when a `trailingAction` occupies the checkmark slot —
+    /// a checkmark beside it would otherwise read as part of that control.
+    case tintedLabel
+}
+
 // MARK: - FilterableSelectionMenu
 /// A menu designed for single selection with checkmarks, search, and filtering capabilities.
 /// Use this when your data type conforms to `Filterable` and you need advanced filtering.
@@ -14,6 +26,8 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     let optionLabel: (T) -> String
     let optionIcon: ((T) -> OptionIcon)?
     let trailingAction: ((T) -> TrailingAction)?
+    /// How the selected row is indicated. Defaults to `.checkmark`.
+    let selectionStyle: MenuSelectionStyle
     let searchable: Bool
     let filterable: Bool
     let filterValueLabel: (AnyHashable) -> String
@@ -43,6 +57,9 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     ///   - optionIcon: Optional ViewBuilder closure to render an icon for each option.
     ///   - trailingAction: Optional ViewBuilder closure to render a trailing action button for each option.
     ///     The trailing action does NOT dismiss the menu, allowing multiple interactions.
+    ///   - selectionStyle: How the selected row is indicated. Defaults to
+    ///     `.checkmark`. Use `.tintedLabel` when a `trailingAction` occupies the
+    ///     checkmark slot.
     ///   - searchable: Whether to show a search bar. Defaults to `true`.
     ///   - filterable: Whether to show the filter button. Defaults to `true`.
     ///   - filterValueLabel: Closure to convert filter values to display strings.
@@ -57,6 +74,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         optionLabel: @escaping (T) -> String = { "\($0)" },
         @ViewBuilder optionIcon: @escaping (T) -> OptionIcon,
         @ViewBuilder trailingAction: @escaping (T) -> TrailingAction,
+        selectionStyle: MenuSelectionStyle = .checkmark,
         searchable: Bool = true,
         filterable: Bool = true,
         filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
@@ -71,6 +89,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         self.optionLabel = optionLabel
         self.optionIcon = optionIcon
         self.trailingAction = trailingAction
+        self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
         self.filterValueLabel = filterValueLabel
@@ -175,6 +194,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                     optionLabel: optionLabel,
                     optionIcon: optionIcon,
                     trailingAction: trailingAction,
+                    selectionStyle: selectionStyle,
                     onToggleExpand: {
                         withAnimation(.easeInOut(duration: 0.25)) {
                             if expandedGroups.contains(group.id) {
@@ -238,6 +258,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                         optionLabel: optionLabel,
                         optionIcon: optionIcon,
                         trailingAction: trailingAction,
+                        selectionStyle: selectionStyle,
                         onToggleExpand: {}, // No-op in search mode
                         onSelect: { item in
                             selectItem(item)
@@ -274,6 +295,8 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(optionLabel(item))
+                        .fontWeight(selection == item && selectionStyle == .tintedLabel ? .semibold : .regular)
+                        .foregroundColor(selection == item && selectionStyle == .tintedLabel ? .accentColor : .primary)
                     if let folder = folderContext {
                         Text(folder)
                             .font(.system(size: 12))
@@ -286,7 +309,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                     actionBuilder(item)
                         .onTapGesture {} // Absorb tap so MenuButton doesn't fire
                 }
-                if selection == item {
+                if selectionStyle == .checkmark && selection == item {
                     Image(systemName: "checkmark")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.accentColor)
@@ -416,6 +439,7 @@ extension FilterableSelectionMenu where TrailingAction == EmptyView {
         @ViewBuilder label: @escaping (T?) -> Label,
         optionLabel: @escaping (T) -> String = { "\($0)" },
         @ViewBuilder optionIcon: @escaping (T) -> OptionIcon,
+        selectionStyle: MenuSelectionStyle = .checkmark,
         searchable: Bool = true,
         filterable: Bool = true,
         filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
@@ -430,6 +454,7 @@ extension FilterableSelectionMenu where TrailingAction == EmptyView {
         self.optionLabel = optionLabel
         self.optionIcon = optionIcon
         self.trailingAction = nil
+        self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
         self.filterValueLabel = filterValueLabel
@@ -448,6 +473,7 @@ extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction 
         groups: [MenuItemGroup<T>] = [],
         @ViewBuilder label: @escaping (T?) -> Label,
         optionLabel: @escaping (T) -> String = { "\($0)" },
+        selectionStyle: MenuSelectionStyle = .checkmark,
         searchable: Bool = true,
         filterable: Bool = true,
         filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
@@ -462,6 +488,7 @@ extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction 
         self.optionLabel = optionLabel
         self.optionIcon = nil
         self.trailingAction = nil
+        self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
         self.filterValueLabel = filterValueLabel
@@ -480,6 +507,7 @@ extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView, 
         groups: [MenuItemGroup<T>] = [],
         label: @escaping (T?) -> String,
         optionLabel: @escaping (T) -> String = { "\($0)" },
+        selectionStyle: MenuSelectionStyle = .checkmark,
         searchable: Bool = true,
         filterable: Bool = true,
         filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
@@ -494,6 +522,7 @@ extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView, 
         self.optionLabel = optionLabel
         self.optionIcon = nil
         self.trailingAction = nil
+        self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
         self.filterValueLabel = filterValueLabel
@@ -513,6 +542,7 @@ private struct FolderRow<T: Hashable, OptionIcon: View, TrailingAction: View>: V
     let optionLabel: (T) -> String
     let optionIcon: ((T) -> OptionIcon)?
     let trailingAction: ((T) -> TrailingAction)?
+    let selectionStyle: MenuSelectionStyle
     let onToggleExpand: () -> Void
     let onSelect: (T) -> Void
 
@@ -558,13 +588,15 @@ private struct FolderRow<T: Hashable, OptionIcon: View, TrailingAction: View>: V
                             }
 
                             Text(optionLabel(item))
+                                .fontWeight(selection == item && selectionStyle == .tintedLabel ? .semibold : .regular)
+                                .foregroundColor(selection == item && selectionStyle == .tintedLabel ? .accentColor : .primary)
                             Spacer()
                             // Trailing action (does not dismiss menu)
                             if let actionBuilder = trailingAction {
                                 actionBuilder(item)
                                     .onTapGesture {} // Absorb tap so MenuButton doesn't fire
                             }
-                            if selection == item {
+                            if selectionStyle == .checkmark && selection == item {
                                 Image(systemName: "checkmark")
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(.accentColor)
