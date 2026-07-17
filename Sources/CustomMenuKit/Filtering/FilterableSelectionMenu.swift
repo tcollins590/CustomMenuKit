@@ -18,7 +18,7 @@ public enum MenuSelectionStyle {
 // MARK: - FilterableSelectionMenu
 /// A menu designed for single selection with checkmarks, search, and filtering capabilities.
 /// Use this when your data type conforms to `Filterable` and you need advanced filtering.
-public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: View, TrailingAction: View>: View {
+public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: View, TrailingAction: View, Header: View>: View {
     @Binding var selection: T?
     let options: [T]
     let groups: [MenuItemGroup<T>]
@@ -26,6 +26,10 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     let optionLabel: (T) -> String
     let optionIcon: ((T) -> OptionIcon)?
     let trailingAction: ((T) -> TrailingAction)?
+    /// Optional header pinned above the scrollable list content (below the
+    /// search/filter bar when present). Useful as a column caption for
+    /// trailing actions — e.g. a right-aligned label over a toggle column.
+    let headerBuilder: (() -> Header)?
     /// How the selected row is indicated. Defaults to `.checkmark`.
     let selectionStyle: MenuSelectionStyle
     let searchable: Bool
@@ -57,6 +61,9 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     ///   - optionIcon: Optional ViewBuilder closure to render an icon for each option.
     ///   - trailingAction: Optional ViewBuilder closure to render a trailing action button for each option.
     ///     The trailing action does NOT dismiss the menu, allowing multiple interactions.
+    ///   - header: Optional ViewBuilder for a view pinned above the list content
+    ///     (below the search/filter bar when present). Does not scroll with the
+    ///     list — use it e.g. as a column caption explaining the trailing actions.
     ///   - selectionStyle: How the selected row is indicated. Defaults to
     ///     `.checkmark`. Use `.tintedLabel` when a `trailingAction` occupies the
     ///     checkmark slot.
@@ -74,6 +81,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         optionLabel: @escaping (T) -> String = { "\($0)" },
         @ViewBuilder optionIcon: @escaping (T) -> OptionIcon,
         @ViewBuilder trailingAction: @escaping (T) -> TrailingAction,
+        header: (() -> Header)? = nil,
         selectionStyle: MenuSelectionStyle = .checkmark,
         searchable: Bool = true,
         filterable: Bool = true,
@@ -89,6 +97,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         self.optionLabel = optionLabel
         self.optionIcon = optionIcon
         self.trailingAction = trailingAction
+        self.headerBuilder = header
         self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
@@ -143,6 +152,12 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
                 // Search and filter bar
                 if searchable || filterable {
                     searchAndFilterBar
+                    Divider()
+                }
+
+                // Pinned header (column caption) above the scrollable content
+                if let headerBuilder = headerBuilder {
+                    headerBuilder()
                     Divider()
                 }
 
@@ -429,8 +444,47 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     }
 }
 
+// MARK: - No Header Convenience (backwards compatible)
+extension FilterableSelectionMenu where Header == EmptyView {
+    /// Creates a filterable selection menu with icons and trailing actions but
+    /// no pinned header. Exists so call sites that omit `header:` can still
+    /// infer the `Header` generic (mirrors `SelectionMenu`'s pattern).
+    public init(
+        selection: Binding<T?>,
+        options: [T] = [],
+        groups: [MenuItemGroup<T>] = [],
+        @ViewBuilder label: @escaping (T?) -> Label,
+        optionLabel: @escaping (T) -> String = { "\($0)" },
+        @ViewBuilder optionIcon: @escaping (T) -> OptionIcon,
+        @ViewBuilder trailingAction: @escaping (T) -> TrailingAction,
+        selectionStyle: MenuSelectionStyle = .checkmark,
+        searchable: Bool = true,
+        filterable: Bool = true,
+        filterValueLabel: @escaping (AnyHashable) -> String = { "\($0)" },
+        isPresented: Binding<Bool>? = nil,
+        onOpen: (() -> Void)? = nil,
+        onClose: (() -> Void)? = nil
+    ) {
+        self._selection = selection
+        self.options = options
+        self.groups = groups
+        self.label = label
+        self.optionLabel = optionLabel
+        self.optionIcon = optionIcon
+        self.trailingAction = trailingAction
+        self.headerBuilder = nil
+        self.selectionStyle = selectionStyle
+        self.searchable = searchable
+        self.filterable = filterable
+        self.filterValueLabel = filterValueLabel
+        self.isPresentedExternal = isPresented
+        self.onOpen = onOpen
+        self.onClose = onClose
+    }
+}
+
 // MARK: - No Trailing Action Convenience
-extension FilterableSelectionMenu where TrailingAction == EmptyView {
+extension FilterableSelectionMenu where TrailingAction == EmptyView, Header == EmptyView {
     /// Creates a filterable selection menu with icons but no trailing actions.
     public init(
         selection: Binding<T?>,
@@ -454,6 +508,7 @@ extension FilterableSelectionMenu where TrailingAction == EmptyView {
         self.optionLabel = optionLabel
         self.optionIcon = optionIcon
         self.trailingAction = nil
+        self.headerBuilder = nil
         self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
@@ -465,7 +520,7 @@ extension FilterableSelectionMenu where TrailingAction == EmptyView {
 }
 
 // MARK: - No Icon Convenience
-extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction == EmptyView {
+extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction == EmptyView, Header == EmptyView {
     /// Creates a filterable selection menu without custom icons.
     public init(
         selection: Binding<T?>,
@@ -488,6 +543,7 @@ extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction 
         self.optionLabel = optionLabel
         self.optionIcon = nil
         self.trailingAction = nil
+        self.headerBuilder = nil
         self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
@@ -499,7 +555,7 @@ extension FilterableSelectionMenu where OptionIcon == EmptyView, TrailingAction 
 }
 
 // MARK: - Text Label Convenience
-extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView, TrailingAction == EmptyView {
+extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView, TrailingAction == EmptyView, Header == EmptyView {
     /// Creates a filterable selection menu with a text label and no icons.
     public init(
         selection: Binding<T?>,
@@ -522,6 +578,7 @@ extension FilterableSelectionMenu where Label == Text, OptionIcon == EmptyView, 
         self.optionLabel = optionLabel
         self.optionIcon = nil
         self.trailingAction = nil
+        self.headerBuilder = nil
         self.selectionStyle = selectionStyle
         self.searchable = searchable
         self.filterable = filterable
