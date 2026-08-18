@@ -112,17 +112,20 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         hierarchicalContent.allItems
     }
 
-    /// Filtered items (applies filter state to all items)
-    private var filteredAllItems: Set<T> {
-        if filterState.isEmpty {
-            return Set(allItems)
-        }
-        return Set(allItems.filter { filterState.matches($0) })
+    /// Items passing the active filter, or `nil` when no filter is active — in which
+    /// case everything passes and no set is built at all.
+    ///
+    /// Bind this ONCE per body pass and reuse it. It was previously computed inside
+    /// `passesFilter`, which runs per item, so every membership test rebuilt the whole
+    /// set: O(n²). At 1044 items that measured 141 ms per pass versus 0.2 ms bound once.
+    private var activeFilterSet: Set<T>? {
+        filterState.isEmpty ? nil : Set(allItems.filter { filterState.matches($0) })
     }
 
-    /// Check if an item passes the current filter
-    private func passesFilter(_ item: T) -> Bool {
-        filteredAllItems.contains(item)
+    /// Check an item against a filter set already bound for this body pass.
+    private func passesFilter(_ item: T, in activeFilter: Set<T>?) -> Bool {
+        guard let activeFilter else { return true }
+        return activeFilter.contains(item)
     }
 
     /// Find the group ID that contains the given item
@@ -163,7 +166,9 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
 
                 // Content
                 ScrollView {
-                    VStack(spacing: 0) {
+                    // Lazy: an expanded folder in a large list must not materialise every
+                    // row at once, only the ones actually on screen.
+                    LazyVStack(spacing: 0) {
                         if searchText.isEmpty {
                             // Normal browsing mode - show folders collapsed
                             normalBrowsingView
@@ -191,10 +196,11 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     @ViewBuilder
     private var normalBrowsingView: some View {
         var isFirst = true
+        let activeFilter = activeFilterSet
 
         // Render groups (folders)
         ForEach(groups) { group in
-            let filteredItems = group.items.filter { passesFilter($0) }
+            let filteredItems = group.items.filter { passesFilter($0, in: activeFilter) }
             if !filteredItems.isEmpty {
                 if !isFirst {
                     Divider()
@@ -227,7 +233,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
         }
 
         // Render ungrouped items
-        ForEach(Array(options.filter { passesFilter($0) }.enumerated()), id: \.offset) { index, option in
+        ForEach(Array(options.filter { passesFilter($0, in: activeFilter) }.enumerated()), id: \.offset) { index, option in
             if !isFirst || index > 0 {
                 Divider()
             }
@@ -236,8 +242,9 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
             itemRow(option, folderContext: nil)
         }
 
-        // Empty state for filters
-        if filteredAllItems.isEmpty && !filterState.isEmpty {
+        // Empty state for filters. Cheap predicate first: with no filter active there is
+        // no set to inspect, and `activeFilter` is nil precisely then.
+        if let activeFilter, activeFilter.isEmpty {
             filterEmptyStateView
         }
     }
@@ -245,11 +252,12 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
     // MARK: - Search Results View
     @ViewBuilder
     private var searchResultsView: some View {
+        let activeFilter = activeFilterSet
         let searchResults = hierarchicalContent.search(query: searchText, itemLabel: optionLabel)
         let matchedGroups = searchResults.matchedGroups.filter { group in
-            group.items.contains { passesFilter($0) }
+            group.items.contains { passesFilter($0, in: activeFilter) }
         }
-        let matchedItems = searchResults.matchedItems.filter { passesFilter($0.item) }
+        let matchedItems = searchResults.matchedItems.filter { passesFilter($0.item, in: activeFilter) }
 
         let hasResults = !matchedGroups.isEmpty || !matchedItems.isEmpty
 
@@ -258,7 +266,7 @@ public struct FilterableSelectionMenu<Label: View, T: Filterable, OptionIcon: Vi
 
             // Show matched folders expanded
             ForEach(matchedGroups) { group in
-                let filteredItems = group.items.filter { passesFilter($0) }
+                let filteredItems = group.items.filter { passesFilter($0, in: activeFilter) }
                 if !filteredItems.isEmpty {
                     if !isFirst {
                         Divider()
@@ -631,9 +639,19 @@ private struct FolderRow<T: Hashable, OptionIcon: View, TrailingAction: View>: V
             }
             .buttonStyle(MenuRowButtonStyle())
 
-            // Expanded content
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(Array(filteredItems.enumerated()), id: \.offset) { index, item in
+            // Expanded content.
+            //
+            // The `if` is load-bearing, not cosmetic: this used to build every folder's
+            // rows unconditionally and merely hide them with `maxHeight: 0` + `clipped()`,
+            // so a collapsed menu still materialised every row (and every trailing
+            // accessory — for a host passing a Toggle, one UISwitch per item). With ~1000
+            // items that alone blocked the main thread for seconds on open.
+            //
+            // The trade is that collapsing no longer animates its height; it transitions
+            // instead. Restoring a height animation must NOT go back to building the rows.
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(Array(filteredItems.enumerated()), id: \.offset) { index, item in
                     if index > 0 {
                         Divider()
                     }
@@ -660,12 +678,11 @@ private struct FolderRow<T: Hashable, OptionIcon: View, TrailingAction: View>: V
                             }
                         }
                     }
+                    }
                 }
+                .padding(.leading, 16)
+                .transition(.opacity)
             }
-            .padding(.leading, 16)
-            .frame(maxHeight: isExpanded ? nil : 0, alignment: .top)
-            .clipped()
-            .opacity(isExpanded ? 1 : 0)
         }
     }
 }
